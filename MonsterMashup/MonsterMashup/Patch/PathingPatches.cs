@@ -37,7 +37,8 @@ namespace MonsterMashup.Patch
             // Check for any oversized actors, and block if within radius of them. It's crude, but should work?
             foreach (AbstractActor actor in allActors)
             {
-                if (unit.DistinctId().Equals(actor.DistinctId(), System.StringComparison.InvariantCultureIgnoreCase)) continue; // Nothing to do, it's ourselves
+                var unitId = ModState.GetActorId(unit);
+                if (unitId == ModState.GetActorId(actor)) continue; // Nothing to do, it's ourselves
 
                 Mod.Log.Trace?.Write($" -- Checking collision for actor: {unit.DistinctId()}, result: {__result}");
 

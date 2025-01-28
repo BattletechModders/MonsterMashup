@@ -2,6 +2,7 @@
 using MonsterMashup.Helper;
 using MonsterMashup.UI;
 using System.Collections.Generic;
+using IRBTModUtils.Extension;
 using UnityEngine;
 
 namespace MonsterMashup
@@ -30,6 +31,29 @@ namespace MonsterMashup
         //internal static Dictionary<string, List<SupportSpawnState>> ChildSpawns = new Dictionary<string, List<SupportSpawnState>>();
 
         internal static HashSet<AbstractActor> Parents = new HashSet<AbstractActor>();
+        
+        internal static Dictionary<string, int> ActorDistinctIds = new Dictionary<string, int>();
+        internal static Dictionary<AbstractActor, int> ActorIds = new Dictionary<AbstractActor, int>();
+        internal static int NextActorId = 1;
+
+        internal static int GetActorId(AbstractActor actor)
+        {
+            if(!ActorIds.TryGetValue(actor, out int actorId))
+            {
+                // force to lower to ignore case conditions
+                var actorDistinctId = actor.DistinctId().ToLower();
+                if (!ActorDistinctIds.TryGetValue(actorDistinctId, out actorId))
+                {
+                    actorId = NextActorId++;
+                    ActorDistinctIds.Add(actorDistinctId, actorId);
+                }
+                
+                ActorIds.Add(actor, actorId);
+            }
+            return actorId;
+            
+        }
+        
 
         internal static void Reset()
         {
@@ -53,6 +77,9 @@ namespace MonsterMashup
             WeaponAttachTransforms.Clear();
             //ChildSpawns.Clear();            
             Parents.Clear();
+            
+            ActorDistinctIds.Clear();
+            ActorIds.Clear();
         }
     }
 
